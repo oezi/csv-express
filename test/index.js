@@ -29,6 +29,13 @@ app.get('/test/objectArray', function(req, res) {
   ]);
 });
 
+app.get('/test/orderTest', function(req, res) {
+  res.csv([
+    { 'a': 1, 1: 'a', 'b': 2, 2: 'b' },
+    { 1: 'z', 'a': 99, 2: 'x', 'b': 98 }
+  ]);
+});
+
 app.get('/test/cyrillic/utf8', function(req, res) {
   res.csv([
     ['Привет', 'мир']
@@ -73,6 +80,15 @@ describe('res.csv()', function() {
         done();
       });
   });
+
+  it('should return values in the given order', function(done) {
+    request
+      .get('http://127.0.0.1:8383/test/orderTest')
+      .end(function(error, res) {
+        res.text.should.equal('"a","b",1,2\r\n"z","x",99,98\r\n')
+        done();
+      })
+  })
 
   it('should response valid content-type', function(done) {
     request
